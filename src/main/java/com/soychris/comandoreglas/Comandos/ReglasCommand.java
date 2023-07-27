@@ -8,10 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
  * Comentarios de una sola linea: Ctrl + /
@@ -34,12 +31,19 @@ import java.util.Map;
  * 2. Leer el config.yml
  * 3. Realizar comprobacion y guardar valores.
  *
+ * RANGOS DINAMICOS
+ * reglas:
+ *  especial:
+ *  - strings
+ *  - string
+ *  premium:
+ *  vip++
  * */
 
 public class ReglasCommand implements CommandExecutor {
-    public static final String GENERAL = "general";
-    public static final String VIP = "VIP";
-    public static final String STAFF = "staff";
+//    public static final String GENERAL = "general";
+//    public static final String VIP = "VIP";
+//    public static final String STAFF = "staff";
     Player player;
     List<String> reglasGeneral, reglasVip, reglasStaff;
     Map<String, List<String>> reglas;
@@ -49,6 +53,10 @@ public class ReglasCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) return true;
         plugin = (ComandoReglas) Bukkit.getPluginManager().getPlugin("ComandoReglas");
+        if (plugin == null) {
+            System.out.println("La instancia de plugin tiene valor null");
+            return true;
+        }
         if (strings.length == 0){
             numeroPagina = "1";
         } else {
@@ -59,35 +67,35 @@ public class ReglasCommand implements CommandExecutor {
         player = (Player) commandSender;
         reglas = new HashMap<>();
 
-        reglasGeneral = new ArrayList<>();
-        List<String> reglasGeneralConfig = plugin.getConfig().getStringList("reglas.general");
-        if (reglasGeneralConfig.isEmpty()){
-            plugin.getLogger().info("No hay reglas generales que mostrar en el archivo de configuracion");
-        } else {
-            reglasGeneral.addAll(reglasGeneralConfig);
-        }
-
-        reglas.put(GENERAL, reglasGeneral);
-
-        reglasVip = new ArrayList<>();
-        List<String> reglasVipConfig = plugin.getConfig().getStringList("reglas.vip");
-        if (reglasVipConfig.isEmpty()){
-            plugin.getLogger().info("No hay reglas vip que mostrar en el archivo de configuracion");
-        } else {
-            reglasVip.addAll(reglasVipConfig);
-        }
-
-        reglas.put(VIP, reglasVip);
-
-        reglasStaff = new ArrayList<>();
-        List<String> reglasStaffConfig = plugin.getConfig().getStringList("reglas.staff");
-        if (reglasStaffConfig.isEmpty()){
-            plugin.getLogger().info("No hay reglas staff que mostrar en el archivo de configuracion");
-        } else {
-            reglasStaff.addAll(reglasStaffConfig);
-        }
-
-        reglas.put(STAFF, reglasStaff);
+//        reglasGeneral = new ArrayList<>();
+//        List<String> reglasGeneralConfig = plugin.getConfig().getStringList("reglas.general");
+//        if (reglasGeneralConfig.isEmpty()){
+//            plugin.getLogger().info("No hay reglas generales que mostrar en el archivo de configuracion");
+//        } else {
+//            reglasGeneral.addAll(reglasGeneralConfig);
+//        }
+//
+//        reglas.put(GENERAL, reglasGeneral);
+//
+//        reglasVip = new ArrayList<>();
+//        List<String> reglasVipConfig = plugin.getConfig().getStringList("reglas.vip");
+//        if (reglasVipConfig.isEmpty()){
+//            plugin.getLogger().info("No hay reglas vip que mostrar en el archivo de configuracion");
+//        } else {
+//            reglasVip.addAll(reglasVipConfig);
+//        }
+//
+//        reglas.put(VIP, reglasVip);
+//
+//        reglasStaff = new ArrayList<>();
+//        List<String> reglasStaffConfig = plugin.getConfig().getStringList("reglas.staff");
+//        if (reglasStaffConfig.isEmpty()){
+//            plugin.getLogger().info("No hay reglas staff que mostrar en el archivo de configuracion");
+//        } else {
+//            reglasStaff.addAll(reglasStaffConfig);
+//        }
+//
+//        reglas.put(STAFF, reglasStaff);
 
         // DECLARATIVA
 //        reglas.forEach(regla -> player.sendMessage(regla));
@@ -109,14 +117,33 @@ public class ReglasCommand implements CommandExecutor {
         player.sendMessage(header);
         player.sendMessage("");
 
-        List<String> reglasFinales = reglas.get(GENERAL);
+        List<String> reglasFinales = new ArrayList<>();
 
-        if (player.hasPermission("reglas.vip")){
-            reglasFinales.addAll(reglas.get(VIP));
+        Set<String> rangos = plugin.getConfig().getConfigurationSection("reglas").getKeys(false);
+        if (rangos.isEmpty()){
+            plugin.getLogger().info("No hay rangos para vincular a reglas en el archivo de configuracion (CONFIG.YML)");
         }
-        if (player.hasPermission("reglas.staff")){
-            reglasFinales.addAll(reglas.get(STAFF));
+        for (int i = 0; i < rangos.size(); i++){
+            String reglasPath = "reglas." + rangos.toArray()[i];
+            // reglasPath = "reglas.generalDinamico"
+            // preguntar por permiso = "reglas.generalDinamico"
+            if (player.hasPermission(reglasPath)){
+                List<String> reglasRango = plugin.getConfig().getStringList(reglasPath);
+                if (reglasRango.isEmpty()){
+                    plugin.getLogger().info(String.format("No hay reglas del rango %s para mostrar", reglasRango));
+                } else {
+                    plugin.getLogger().info(String.format("Se han registrado %s reglas del rango %s", reglasRango.size(), reglasPath));
+                    reglasFinales.addAll(reglasRango);
+                }
+            }
         }
+//
+//        if (player.hasPermission("reglas.vip")){
+//            reglasFinales.addAll(reglas.get(VIP));
+//        }
+//        if (player.hasPermission("reglas.staff")){
+//            reglasFinales.addAll(reglas.get(STAFF));
+//        }
 
         for (int i = 0; i < reglasFinales.size(); i++){
             String regla = reglasFinales.get(i);

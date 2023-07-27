@@ -18,14 +18,8 @@ public final class ComandoReglas extends JavaPlugin {
     public void setupConfig(){
         this.saveDefaultConfig();
         this.getConfig().options().copyDefaults(true);
-        if (!this.getConfig().contains("reglas.general")){
-            this.getConfig().set("reglas.general", "");
-        }
-        if (!this.getConfig().contains("reglas.vip")){
-            this.getConfig().set("reglas.vip", "");
-        }
-        if (!this.getConfig().contains("reglas.staff")){
-            this.getConfig().set("reglas.staff", "");
+        if (!(this.getConfig().contains("reglas"))){
+            this.getConfig().set("reglas", null);
         }
         this.saveConfig();
     }

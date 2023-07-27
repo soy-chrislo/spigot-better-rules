@@ -2,7 +2,16 @@
 # general:
 # - 'Regla 1'
 
+# reglas.general
+
+# Para asignar un permiso a un conjunto de reglas, sigue el formato de reglas.rango:
+# reglas:
+#   general:
+#   - 'Regla 1'
+# En el caso anterior, el permiso debe ser reglas.general
+
 reglas:
   general: # List String
-  vip: # List String
-  staff: # List String
+    - "regla 1"
+    - "regla 2"
+
