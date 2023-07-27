@@ -1,0 +1,8 @@
+# General, Vip y Staff son listas donde debes incluir las reglas en el siguiente formato:
+# general:
+# - 'Regla 1'
+
+reglas:
+  general: # List String
+  vip: # List String
+  staff: # List String

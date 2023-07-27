@@ -1,0 +1,4 @@
+com\soychris\comandoreglas\ComandoReglas.class
+com\soychris\comandoreglas\Comandos\ReglasCommand.class
+com\soychris\comandoreglas\Comandos\ReglasReloadCommand.class
+com\soychris\comandoreglas\Comandos\ReglasFinalizadoCommand.class

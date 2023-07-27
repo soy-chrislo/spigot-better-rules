@@ -1,0 +1,17 @@
+name: ComandoReglas
+version: '1.0-SNAPSHOT'
+main: com.soychris.comandoreglas.ComandoReglas
+api-version: '1.8'
+commands:
+  reglas:
+    description: Muestra las reglas del servidor.
+    usage: /reglas <numero de pagina>
+  reglasfinalizado:
+    description: Muestra las reglas del servidor.
+    usage: /reglasfinalizado <numero de pagina>
+  reglasreload:
+    description: Recarga el plugin.
+    usage: /reglasreload
+
+
+
